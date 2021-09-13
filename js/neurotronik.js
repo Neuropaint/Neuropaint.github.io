@@ -6,6 +6,7 @@ var x_max;
 var x_min;
 var y_max;
 var y_min;
+var indexShortcuts=0;
 
 /*Update preview in init*/
 $(function() {
@@ -168,8 +169,7 @@ var example = {
         'n3.add(Dense(150));\n' + 'n3.add(Dense(150));\n\n' +
         '/* Part 3: Model Definition */\n' + '\n' + 'model.add(n3);\n' +
         'model.add(n1,n3);\n' +
-        'model.add(n2,n3);\n' +
-        '         \n',
+        'model.add(n2,n3);',
 
         '/* Example 3: Complex Siamese */\n\n' + '/* Part 1: Nodes Definition */\n\n' +
         'var x1a = new Node();\n' +
@@ -225,7 +225,7 @@ var example = {
         'model.add(x2,xp1);\n' +
         'model.add(xp1,xp3);\n' +
         'model.add(x2,xp3);\n' +
-        'model.add(x3,xp3);\n\n',
+        'model.add(x3,xp3);',
 
         '/*Example 4: Encoder-Decoder*/\n\n' +
         '/* Part 1: Nodes Definition */\n\n' +
@@ -245,51 +245,30 @@ var example = {
         '' +
         '/* Part 3: Model Definition */\n\n' +
         '' +
-        'model.add(n1);\n',
+        'model.add(n1);',
 
         '/* Example 5: ResNet */\n' +
         '\n' +
         '/* Part 1: Nodes Definition */\n' +
         '\n' +
         'var n1 = new Node();' +
-        'var n2 = new Node();\n' +
-        'var n3 = new Node();' +
-        'var n4 = new Node();\n' +
-        'var n5 = new Node();' +
-        'var n6 = new Node();\n' +
-        'var n7 = new Node();' +
-        'var n8 = new Node();\n' +
-        'var n9 = new Node();' +
         '\n' +
         '\n' +
         '/* Part 2: Neural Network */\n' +
         '\n' +
         'n1.add(Input(48,32,10));\n' +
-        'n4=n1.add(Conv2D(32,[10,10],[1,1],"same"));\n' +
-        'n1.add(MaxPooling2D([2,2]));\n' +
-        'n6=n1.add(Conv2D(64,[5,5],[1,1],"same"));\n' +
-        'n1.add(MaxPooling2D([2,2]));\n' +
-        'n7=n1.add(Conv2D(72,[10,10],[1,1],"same"));\n' +
-        '\n' +
-        'n2.add(Input(48,32,10));\n' +
-        'n5=n2.add(Conv2D(32,[10,10],[1,1],"same"));\n' +
-        'n2.add(MaxPooling2D([2,2]));\n' +
-        'n8=n2.add(Conv2D(64,[5,5],[1,1],"same"));\n' +
-        'n2.add(MaxPooling2D([2,2]));\n' +
-        'n9=n2.add(Conv2D(72,[10,10],[1,1],"same"));\n' +
-        '\n' +
-        'n3.add(Dense(150));\n' +
-        'n3.add(Dense(150));\n' +
+        'n2 = n1.add(Conv2D(32,[10,10],[1,1],"same"));\n' +
+        'n3 = n1.add(Conv2D(64,[5,5],[1,1],"same"));\n' +
+        'n4 = n1.add(Conv2D(72,[10,10],[1,1],"same"));\n' +
+        'n5 = n1.add(Conv2D(86,[10,10],[1,1],"same"));\n' +
+        'n1.add(Dense(150));\n' +
         '\n' +
         '/* Part 3: Model Definition */\n' +
         '\n' +
-        'model.add(n3);\n' +
-        'model.add(n1,n3);\n' +
-        'model.add(n2,n3);\n' +
+        'model.add(n1);\n' +
         '\n' +
-        'model.addShortcut(n4,n5);\n' +
-        'model.addShortcut(n6,n7);\n' +
-        'model.addShortcut(n8,n9);\n'
+        'model.addShortcut(n2,n4);\n' +
+        'model.addShortcut(n3,n5);'
     ],
 
 }
@@ -853,11 +832,11 @@ function Input(x, y, z) {
         if (x > 0 && y > 0 && z > 0) {
             return new InputLayer(x, y, z);
         } else {
-            throw new Error("The Input function is poorly defined: (Only positive input numbers.) <p> Example: Input(32,32,20) with 3 arguments.</p>");
+            throw new Error("The Input layer is poorly defined: (Only positive input numbers.) <p> Example: Input(32,32,20) with 3 arguments.</p>");
         }
 
     }
-    throw new Error("The Input function is poorly defined: (Invalid number of arguments.) <p> Example: Input(32,32,20) with 3 arguments.</p>");
+    throw new Error("The Input layer is poorly defined: (Invalid number of arguments.) <p> Example: Input(32,32,20) with 3 arguments.</p>");
 }
 
 /**
@@ -877,26 +856,26 @@ function Conv2D(filters, kernel, strides, padding, input) {
     //Check the arguments
     if ((arguments.length == 4 || arguments.length == 5) && kernel.length == 2 && strides.length == 2) {
         if (arguments.length == 5 && input == undefined) {
-            throw new Error("The Conv2D function is poorly defined: (Input Missing.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
+            throw new Error("The Conv2D layer is poorly defined: (Input Missing.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
         }
         for (let kern of kernel) {
             if (kern == undefined) {
-                throw new Error("The Conv2D function is poorly defined: (Kernel missing.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
+                throw new Error("The Conv2D layer is poorly defined: (Kernel missing.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
             }
             if (kern <= 0) {
-                throw new Error("The Conv2D function is poorly defined: (Kernel must have positive numbers.). <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
+                throw new Error("The Conv2D layer is poorly defined: (Kernel must have positive numbers.). <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
             }
         }
         for (let str of strides) {
             if (str == undefined) {
-                throw new Error("The Conv2D function is poorly defined: (Strides missing.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
+                throw new Error("The Conv2D layer is poorly defined: (Strides missing.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
             }
             if (str <= 0) {
-                throw new Error("The Conv2D function is poorly defined: (Strides must have positive numbers.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
+                throw new Error("The Conv2D layer is poorly defined: (Strides must have positive numbers.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
             }
         }
         if (filters <= 0) {
-            throw new Error("The Conv2D function is poorly defined: (Filters must be a positive number.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
+            throw new Error("The Conv2D layer is poorly defined: (Filters must be a positive number.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
         }
         if (input == undefined) {
             return new Conv2DLayer(filters, new Tuple(kernel[0], kernel[1]), new Tuple(strides[0], strides[1]), padding);
@@ -905,7 +884,7 @@ function Conv2D(filters, kernel, strides, padding, input) {
         }
 
     }
-    throw new Error("The Conv2D function is poorly defined: (Invalid number of arguments.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
+    throw new Error("The Conv2D layer is poorly defined: (Invalid number of arguments.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [1,1], 'same',Input(32,32,20)) with 5 arguments.</p>");
 }
 
 /**
@@ -924,26 +903,26 @@ function Conv2D(filters, kernel, strides, padding, input) {
 function Deconv2D(filters, kernel, strides, padding, input) {
     if ((arguments.length == 4 || arguments.length == 5) && kernel.length == 2 && strides.length == 2) {
         if (arguments.length == 5 && input == undefined) {
-            throw new Error("The Deconv2D function is poorly defined: (Input Missing.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
+            throw new Error("The Deconv2D layer is poorly defined: (Input Missing.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
         }
         for (let kern of kernel) {
             if (kern == undefined) {
-                throw new Error("The Deconv2D function is poorly defined: (Kernel missing.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
+                throw new Error("The Deconv2D layer is poorly defined: (Kernel missing.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
             }
             if (kern <= 0) {
-                throw new Error("The Deconv2D function is poorly defined: (Kernel must have positive numbers.). <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
+                throw new Error("The Deconv2D layer is poorly defined: (Kernel must have positive numbers.). <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
             }
         }
         for (let str of strides) {
             if (str == undefined) {
-                throw new Error("The Deconv2D function is poorly defined: (Strides missing.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
+                throw new Error("The Deconv2D layer is poorly defined: (Strides missing.) <p> Example: Conv2D(32, [10,10], [1,1], 'same') with 4 arguments.</p> or <p> Example: Conv2D(32, [10,10], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
             }
             if (str <= 0) {
-                throw new Error("The Deconv2D function is poorly defined: (Strides must have positive numbers.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
+                throw new Error("The Deconv2D layer is poorly defined: (Strides must have positive numbers.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
             }
         }
         if (filters <= 0) {
-            throw new Error("The Conv2D function is poorly defined: (Filters must be a positive number.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
+            throw new Error("The Conv2D layer is poorly defined: (Filters must be a positive number.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
         }
         if (input == undefined) {
             return new Deconv2DLayer(filters, new Tuple(kernel[0], kernel[1]), new Tuple(strides[0], strides[1]), padding);
@@ -952,7 +931,7 @@ function Deconv2D(filters, kernel, strides, padding, input) {
         }
 
     }
-    throw new Error("The Deconv2D function is poorly defined: (Invalid number of arguments.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
+    throw new Error("The Deconv2D layer is poorly defined: (Invalid number of arguments.) <p> Example: Deconv2D(32, [5,5], [2,2], 'same') with 4 arguments.</p> or <p> Example: Deconv2D(32, [5,5], [2,2], 'same',Input(32,32,20)) with 5 arguments.</p>");
 }
 
 /**
@@ -969,15 +948,15 @@ function MaxPooling2D(tuple) {
     if (tuple.length == 2) {
         for (let tup of tuple) {
             if (tup == undefined) {
-                throw new Error("The MaxPooling2D function is poorly defined: (Value missing.) <p> Example: MaxPooling([2,2]) with 1 argument.</p>");
+                throw new Error("The MaxPooling2D layer is poorly defined: (Value missing.) <p> Example: MaxPooling([2,2]) with 1 argument.</p>");
             }
             if (tup <= 0) {
-                throw new Error("The MaxPooling2D function is poorly defined: (Only positive numbers.) <p> Example: MaxPooling([2,2]) with 1 argument.</p>");
+                throw new Error("The MaxPooling2D layer is poorly defined: (Only positive numbers.) <p> Example: MaxPooling([2,2]) with 1 argument.</p>");
             }
         }
         return new MaxPooling2DLayer(new Tuple(tuple[0], tuple[1]));
     }
-    throw new Error("The MaxPooling2D function is poorly defined: (Invalid number of arguments.) <p> Example: MaxPooling([2,2]) with 1 argument.</p>");
+    throw new Error("The MaxPooling2D layer is poorly defined: (Invalid number of arguments.) <p> Example: MaxPooling([2,2]) with 1 argument.</p>");
 }
 
 /**
@@ -992,11 +971,11 @@ function MaxPooling2D(tuple) {
 function Dense(vector) {
     if (arguments.length == 1) {
         if (vector <= 0) {
-            throw new Error("The Dense function is poorly defined: (Vector must be a positive number.) <p> Example: Dense(200) with 1 argument.</p>");
+            throw new Error("The Dense layer is poorly defined: (Vector must be a positive number.) <p> Example: Dense(200) with 1 argument.</p>");
         }
         return new DenseLayer(vector);
     }
-    throw new Error("The Dense function is poorly defined: (Invalid number of arguments.) <p> Example: Dense(200) with 1 argument.</p>");
+    throw new Error("The Dense layer is poorly defined: (Invalid number of arguments.) <p> Example: Dense(200) with 1 argument.</p>");
 }
 
 /**
@@ -1010,12 +989,12 @@ function Concatenate(nodes) {
     if (arguments.length == 1) {
         for (let node of nodes) {
             if (!(node instanceof Node)) {
-                throw new Error("The Concatenate function is poorly defined: (Arguments must be nodes.).<p> Example: Concatenate([x1,x2]) with 1 argument.</p>");
+                throw new Error("The Concatenate layer is poorly defined: (Arguments must be nodes.).<p> Example: Concatenate([x1,x2]) with 1 argument.</p>");
             }
         }
         return new ConcatenateLayer(nodes);
     }
-    throw new Error("The Concatenate function is poorly defined: (Invalid number of arguments.)<p> Example: Concatenate([x1,x2]) with 1 argument.</p>");
+    throw new Error("The Concatenate layer is poorly defined: (Invalid number of arguments.)<p> Example: Concatenate([x1,x2]) with 1 argument.</p>");
 }
 
 /*MATRICES*/
@@ -1300,7 +1279,7 @@ class Cube {
         this.coordinates.push(new Coordinate(x_random, y_random, this.coordinates[4].getZ()));
 
         //Shortcut CNN
-        this.coordinates.push(new Coordinate(0, this.coordinates[0].getY() - 50, 0));
+        this.coordinates.push(new Coordinate(0, this.coordinates[0].getY() - 30, 0));
         this.coordinates.push(new Coordinate(0, this.coordinates[0].getY(), 0));
     }
     getX() {
@@ -1411,13 +1390,7 @@ class Node {
             this.setLast();
             this.setActualCube(this.getLastCube());
 
-            let node = new Node();
-            let inputCubeList = new Array();
-            inputCubeList.push(inputCube);
-            node.setCubeList(inputCubeList);
-            node.setLastCube(inputCube);
-            node.setActualCube(inputCube);
-            return node;
+            return createAuxNode(inputCube);
 
         } else if (input instanceof Conv2DLayer || input instanceof Conv2DInputLayer) {
             let convolutionList;
@@ -1441,12 +1414,7 @@ class Node {
             this.setLast();
             this.setActualCube(this.getLastCube());
 
-            let node = new Node();
-            node.setCubeList(convolutionList);
-            node.setLastCube(convolutionList[convolutionList.length - 1]);
-            node.setActualCube(node.getLastCube());
-
-            return node;
+            return createAuxNodeList(convolutionList);
         } else if (input instanceof Deconv2DLayer || input instanceof Deconv2DInputLayer) {
             let deconvolutionList;
             if (input.input == undefined) {
@@ -1470,21 +1438,18 @@ class Node {
             this.setLast();
             this.setActualCube(this.getLastCube());
 
-            let node = new Node();
-            node.setCubeList(deconvolutionList);
-            node.setLastCube(deconvolutionList[deconvolutionList.length - 1]);
-            node.setActualCube(node.getLastCube());
-
-            return node;
+            return createAuxNodeList(deconvolutionList);
         } else if (input instanceof MaxPooling2DLayer) {
             if (this.getActualCube() == null || this.cubeList.length == 0) {
                 throw new Error('The node does not have an input layer.');
             }
             this.setActualCube(layerController.MaxPooling2D(input.tuple, this.getActualCube()));
         } else if (input instanceof DenseLayer) {
-            this.cubeList.push(layerController.Dense(input.vector));
+            let denseCube = layerController.Dense(input.vector);
+            this.cubeList.push(denseCube);
             this.setLast();
             this.setActualCube(this.getLastCube());
+            return createAuxNode(denseCube);
         } else if (input instanceof ConcatenateLayer) {
             for (let n of input.nodes) {
                 if (n.cubeList.length == 0) {
@@ -1496,16 +1461,28 @@ class Node {
             this.setLast();
             this.setActualCube(this.getLastCube());
 
-            let node = new Node();
-            let concatenatedCubeList = new Array();
-            concatenatedCubeList.push(concatenatedCube);
-            node.setCubeList(concatenatedCubeList);
-            node.setLastCube(concatenatedCube);
-            node.setActualCube(node.getLastCube());
-            return node;
+            return createAuxNode(concatenatedCube)
         }
     }
 
+}
+
+function createAuxNode(cube){
+    let node = new Node();
+    cubes = new Array();
+    cubes.push(cube);
+    node.setCubeList(cubes);
+    node.setLastCube(cube);
+    node.setActualCube(node.getLastCube());
+    return node;
+}
+
+function createAuxNodeList(cubes){
+    let node = new Node();
+    node.setCubeList(cubes);
+    node.setLastCube(cubes[cubes.length-1]);
+    node.setActualCube(node.getLastCube());
+    return node;
 }
 
 /*NEURALNETOWRK TREE*/
@@ -1866,10 +1843,16 @@ class SvgController {
             let vertex3 = cube2.getCoordinates()[9];
             let vertex4 = cube2.getCoordinates()[10];
 
+            vertex2.setY(vertex2.getY()+indexShortcuts);
+            vertex3.setY(vertex3.getY()+indexShortcuts);
+
+            indexShortcuts-=5;
+
             this.drawArrow(new Arrow(vertex1, vertex2));
             this.drawArrow(new Arrow(vertex2, vertex3));
             this.drawArrow(new Arrow(vertex4, vertex3));
         }
+        indexShortcuts=0;
     }
     selectColor(cube) {
         if (cube.isKernel) {
